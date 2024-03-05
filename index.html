@@ -1,0 +1,820 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+    <title>NodeJS Server</title>
+    <style>
+        /* 样式信息 */
+        #designContainer {
+          /* border:1px solid green; */
+          min-height:100%;
+          width: 100%;
+        }
+        #canvas {
+        position: relative;
+        width:100%;
+        /* margin: 0 auto; */
+        height: 100vh;
+        border: 1px solid black;
+      }
+      #corner {
+        /* z-index:10; */
+      }
+      .mycard {
+        display: none;
+        align-content: center;
+        justify-content: center;
+        display:none;
+        position: fixed;
+        right: 1%;
+        top:0;
+        height:100vh;
+      }
+      body {
+        background: #f0f2f5;
+        overflow: hidden;
+      }
+    </style>
+    <!-- socket.io -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script> -->
+    <script src="node_modules/socket.io/client-dist/socket.io.min.js"></script>
+    <!-- rapheal.js -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script> -->
+    <script src="node_modules/raphael/raphael.min.js"></script>
+    <!-- bootstrap -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet"> -->
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script> -->
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <div id="corner">
+      <button onclick="connect()">connect</button>
+      <button onclick="disconnect()">disconnect</button>
+      <button onclick="decreasePercentage()">-</button>
+      <span id="percentage">100%</span>
+      <button onclick="increasePercentage()">+</button>
+    </div>
+    <div
+    id="canvas"
+    onmousedown="startDragging(event)"
+    onmousemove="drag(event)"
+    onmouseup="stopDragging()"
+    onclick="canvasClick(event)"
+  >
+    <div id="designContainer"></div>
+    
+    </div>
+    <!-- 右侧卡片 -->
+    <div id="mycard" class="mycard" style="display: none;">
+      
+    <div class="card" style="width: 18rem;overflow: auto;">
+      <div class="card-header">
+        <div class="dropdown" id="dropdown">
+          <button id="dropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            选择开发平台
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Phone &emsp;&emsp;rpx</a></li>
+            <li><a class="dropdown-item" href="#">PC&emsp;&emsp;&emsp;&emsp;px</a></li>
+          </ul>
+        </div>
+      </div>
+      <ul id="cardUL" class="list-group list-group-flush">
+        <!-- <li class="list-group-item">An item</li> -->
+      </ul>
+    </div>
+  </div>
+  </body>
+  
+  <script>
+
+    var currentPercentage = 100;  // 初始百分比值
+
+function increasePercentage() {
+  currentPercentage += 10;  // 每次增加10%
+  updatePercentage();
+}
+
+function decreasePercentage() {
+  currentPercentage -= 10;  // 每次减少10%
+  updatePercentage();
+}
+function updatePercentage() {
+  // 更新显示的百分比值
+  const ele = document.getElementById("canvas");
+  const percentageEle = document.getElementById("percentage")
+  percentageEle.textContent = currentPercentage + "%";
+
+  // 设置页面的缩放比例
+  var scale = currentPercentage / 100;
+  ele.style.transform = "scale(" + scale + ")";
+}
+  </script>
+  <script>
+    var isDragging = false;
+    var startPosition = { x: 0, y: 0 };
+    var offset = { x: 0, y: 0 };
+
+    function startDragging(event) {
+      isDragging = true;
+      startPosition.x = event.clientX;
+      startPosition.y = event.clientY;
+    }
+
+    function drag(event) {
+      if (!isDragging) return;
+
+      var currentX = event.clientX;
+      var currentY = event.clientY;
+
+      var deltaX = currentX - startPosition.x;
+      var deltaY = currentY - startPosition.y;
+
+      offset.x += deltaX;
+      offset.y += deltaY;
+
+      startPosition.x = currentX;
+      startPosition.y = currentY;
+
+      updateCanvasPosition();
+    }
+
+    function stopDragging() {
+      isDragging = false;
+    }
+
+    function updateCanvasPosition() {
+      var canvas = document.getElementById("canvas");
+      canvas.style.left = offset.x + "px";
+      canvas.style.top = offset.y + "px";
+    }
+
+    // document.getElementById("canvas").addEventListener("click",(event)=>{
+    //   console.log(event)
+    //   removeClickBorder(selectedElement);
+    //   selectedElement = null;
+    //   const card = document.getElementById("mycard")
+    //   card.style.display = 'none'
+    // })
+
+    function canvasClick(event) {
+      // console.log(event)
+      removeClickBorder(selectedElement);
+      selectedElement = null;
+      const card = document.getElementById("mycard")
+      card.style.display = 'none'
+    }
+  </script>
+    <script>
+      var socket = ''
+      function connect() {
+        socket = io("ws://127.0.0.1:3000")
+        socket.on('connect',()=>{
+            console.log('con!!');
+            sendMsg()
+        })
+      }
+      function disconnect() {
+        if(socket) {
+          socket.disconnect();
+          console.log('discon!!!')
+        }
+      }
+
+    function sendMsg() {
+      console.log('客户端发送请求')
+      socket.emit("chat message", '请求psd');
+      socket.on("server message", (msg) => {
+      console.log('收到回复!')
+      // console.log(msg);
+        generateHTML(msg);
+      });
+  };
+    </script>
+    <script>
+      let mode = "Phone";
+      // 创建Raphael画布
+      var paper = Raphael("designContainer");
+      
+      var selectedRect = null;
+      var distanceLineList = [];
+      var distanceLine = null;
+      var distanceRectList = [];
+      var distanceRect = null;
+      var distanceTextList = [];
+      var distanceText = null;
+      
+      // 存储已绘制的矩形信息
+      var rectangles = [];
+      // 图片列表
+      var imgList = [];
+
+      // 绘制图片
+      // 图片属性
+      var property = []
+
+      function generateHTML(data) {
+        if(!data.length>0) return; 
+        // 确保图片不超出画布边界
+        var scale = 1;
+        var canvasWidth = paper.width;
+        var canvasHeight = paper.height;
+        var maxHeight = 0;
+        var maxWidth = 0;
+        for(const i of data) {
+          maxHeight = Math.max(maxHeight,i.height)
+          maxWidth = Math.max(maxWidth,i.width)
+        }
+        // console.log(data[0].width,data[0].height)
+        // console.log(maxWidth,maxHeight)
+
+        var widthScale = canvasWidth / maxWidth;
+        var heightScale = canvasHeight / maxHeight;
+        var currentScale = Math.min(widthScale, heightScale);
+        scale = Math.min(scale, currentScale)*0.8;
+       
+          // console.log(canvasWidth,maxWidth,scale,maxWidth*scale)
+          for(const i of data) {
+            var scaledWidth = i.width * scale;
+            var scaledHeight = i.height * scale;
+            var x = (i.left) * scale +(canvasWidth-maxWidth*scale)/2 ;
+            var y = (i.top) * scale + (canvasHeight-maxHeight*scale)/2;
+          // 绘制图片
+          var img = paper.image(i.src, x, y, scaledWidth, scaledHeight);
+          // let img = paper.image(i.src,i.left,i.top,i.width,i.height)
+          img.attr({
+            "opacity":i.opacity,
+            "cursor":"pointer"
+          })
+          img.click(function(event){
+            // 防止冒泡，避免点击到上层触发状态栏消失
+            event.stopPropagation();
+            // 清空属性列表
+            property = [];
+            const dropdownButton = document.getElementById("dropdownButton")
+            dropdownButton.textContent = "选择开发平台";
+            const ulElement = document.getElementById("cardUL")
+            // 清空之前的数据
+            ulElement.innerHTML = '';
+            const card = document.getElementById("mycard")
+            for(let j in i) {
+              // 创建新的 <li> 元素
+              if(j!=='src') {
+                var newLiElement = document.createElement("li");
+                newLiElement.textContent = `${j}: ${i[j]}`;
+                newLiElement.classList.add('list-group-item')
+                property.push({key:j,value:i[j]})
+                // 将新的 <li> 元素添加到 <ul> 中
+                ulElement.appendChild(newLiElement);
+              }
+              // card.classList.add('mycard')
+              card.style.display = 'grid'
+            }
+          })
+        }
+        init()
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
+        dropdownItems.forEach(function(item) {
+          item.addEventListener('click', function() {
+            // 点击事件处理逻辑
+            console.log('点击了' + item.textContent);
+            mode = item.textContent.indexOf("PC")!==-1?"PC":"Phone";
+            const dropdownButton = document.getElementById("dropdownButton")
+            dropdownButton.textContent = item.textContent;
+            const ulElement = document.getElementById("cardUL")
+            // 清空之前的数据
+            ulElement.innerHTML = '';
+              for(let i of property) {
+                var newLiElement = document.createElement("li");
+                newLiElement.textContent = `${i.key}: ${typeof i.value==="number"&&item.textContent.indexOf("PC")!==-1&&i.value!=="opacity" ?i.value/2:i.value}`;
+                newLiElement.classList.add('list-group-item')
+                // 将新的 <li> 元素添加到 <ul> 中
+                ulElement.appendChild(newLiElement);
+            } 
+            
+          });
+        });
+      });
+
+      // 随机生成不重叠的圆角矩形
+      function generateRectangle() {
+        // 圆角矩形的宽高范围
+        var minWidth = 50;
+        var maxWidth = 150;
+        var minHeight = 50;
+        var maxHeight = 150;
+      
+        // 随机生成圆角矩形的宽高
+        var width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth);
+        var height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
+      
+        // 随机生成圆角矩形的位置
+        var x = Math.floor(Math.random() * (paper.width - width));
+        var y = Math.floor(Math.random() * (paper.height - height));
+      
+        // 遍历已绘制的矩形，检查是否与当前矩形重叠
+        for (var i = 0; i < rectangles.length; i++) {
+          var rect = rectangles[i];
+          if (
+            x < rect.x + rect.width &&
+            x + width > rect.x &&
+            y < rect.y + rect.height &&
+            y + height > rect.y
+          ) {
+            // 发生重叠，重新生成圆角矩形
+            return generateRectangle();
+          }
+        }
+      
+        // 绘制圆角矩形
+        var rect = paper.rect(x, y, width, height, 10);
+        rect.attr("fill", "lightblue");
+        rect.attr("stroke", "black");
+        rect.attr("stroke-width", 2);
+      
+        // 将矩形信息添加到数组中
+        rectangles.push({
+          x: x,
+          y: y,
+          width: width,
+          height: height,
+        });
+      
+        // 计算内嵌圆角矩形的宽高
+        var innerWidth = width / 3;
+        var innerHeight = height / 3;
+      
+        // 计算内嵌圆角矩形的位置
+        var innerX = x + (width - innerWidth) / 2;
+        var innerY = y + (height - innerHeight) / 2;
+      
+        // 绘制内嵌的圆角矩形
+        var innerRect = paper.rect(innerX, innerY, innerWidth, innerHeight, 5);
+        innerRect.attr("fill", "lightgreen");
+        innerRect.attr("stroke", "black");
+        innerRect.attr("stroke-width", 2);
+      }
+      
+      // 绘制五个不重叠的圆角矩形
+      // for (var i = 0; i < 5; i++) {
+      //   generateRectangle();
+      // }
+      
+      // 添加红色边框到选中元素
+      function addSelectedBorder(element) {
+        var bbox = element.getBBox();
+        var border = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+        border.attr("stroke", "red");
+        border.attr("stroke-width", 2);
+        border.attr("fill", "none");
+        element.data("border", border);
+      }
+      
+      // 添加蓝色边框到悬浮元素
+      function addHoverBorder(element) {
+        var bbox = element.getBBox();
+        var border = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+        border.attr("stroke", "blue");
+        border.attr("stroke-width", 2);
+        border.attr("fill", "none");
+        element.data("border", border);
+      }
+      
+      // 移除边框
+      function removeBorder(element) {
+        var border = element.data("border");
+        if (border&&element!==selectedElement) {
+          border.remove();
+          element.removeData("border");
+        }
+      }
+      
+      function removeClickBorder(element) {
+        if(element) {
+          var border = element.data("border");
+        if (border) {
+          border.remove();
+          element.removeData("border");
+        }
+        }
+        
+      }
+      
+      // 监听元素选中和鼠标悬停事件
+      var selectedElement = null;
+      function init() {
+      
+      paper.forEach(function (element) {
+        element.click(function () {
+          // 移除之前选中元素的边框
+          if (selectedElement&&selectedElement!==this) {
+            // removeClickBorder(selectedElement);
+            // removeDistanceLine()
+            // removeBorder(this)
+          }
+          removeClickBorder(selectedElement);
+          removeDistanceLine()
+          removeBorder(this)
+          // 添加红色边框到当前选中元素
+          addSelectedBorder(this);
+          
+          // 更新选中元素
+          selectedElement = this;
+        });
+      
+        element.hover(
+          function () {
+            // 添加蓝色边框到悬浮元素
+            if((selectedElement&&selectedElement!==this&&!element.data("border"))) {
+              addHoverBorder(this);
+            }
+            if (selectedElement && selectedElement !== element) {
+              drawDistanceLine(selectedElement, element);
+            }
+          },
+          function () {
+            // 移除悬浮元素的边框
+            removeBorder(this);
+            removeDistanceLine();
+          }
+        );
+      });
+    }
+      
+      // 计算两图形距离最近的点
+      function calculateDis(mystart,myend) {
+        const start = mystart.getBBox();
+        const end = myend.getBBox()
+        // console.log(start,end)
+        const startSpot = [
+          [start.x,start.y],
+          [start.x2,start.y],
+          [start.x,start.y2],
+          [start.x2,start.y2]
+        ];
+        const endSpot = [
+          [end.x,end.y],
+          [end.x2,end.y],
+          [end.x,end.y2],
+          [end.x2,end.y2]
+        ];
+        let min = Math.abs(Math.pow(startSpot[0][0]-endSpot[0][0],2)+Math.pow(startSpot[0][1]-endSpot[0][1],2))
+        // console.log(min)
+        let minArr = [startSpot[0],startSpot[0]]
+        for(let i=0;i<startSpot.length;i++) {
+          for(let j=0;j<endSpot.length;j++) {
+            const s = startSpot[i];
+            const e = endSpot[j]
+            const dis = Math.abs(Math.pow(s[0]-e[0],2)+Math.pow(s[1]-e[1],2))
+            // console.log(dis)
+            if(dis<=min) minArr = [s,e];
+            min = Math.min(min,dis);
+          }
+        }
+        return minArr;
+      
+      }
+      
+      // 绘制文字
+      function drawText(distance,textX,textY){
+        let multiple = mode==="Phone"?1:0.5;
+        distance *= multiple;
+        var padding = 5;
+        var text = paper.text(textX, textY, distance);
+        text.attr(
+          {
+          "font-size": 12,
+          "fill": "black",
+          "text-anchor": "middle",
+          "vertical-align": "bottom"
+          });
+        text.attr();
+        var textBBox = text.getBBox();
+        var rectWidth = textBBox.width + 2 * padding;
+        var rectHeight = textBBox.height + 2 * padding;
+      
+        distanceRect = paper.rect(
+          textX - rectWidth / 2,
+          textY - rectHeight / 2,
+          rectWidth,
+          rectHeight,
+          5
+        );
+        distanceRect.attr("fill", "red");
+        distanceRect.attr("stroke", "none"); // 去掉文字外圈圆角矩形边框
+        distanceRectList.push(distanceRect)
+      
+        distanceText = paper.text(textX, textY, distance);
+        distanceText.attr({
+          "font-size":12,
+          "fill":"black"
+        });
+        text.remove()
+        distanceTextList.push(distanceText)
+      }
+      
+      // 两元素xy包含时画线
+      function Draw_contain_xy(largeEle,smallEle,direction) {
+        let spotList = [];
+        if(direction==='horizontal') {
+          const y_List = Array.from([largeEle.y,largeEle.y2,smallEle.y,smallEle.y2]).sort((a,b)=>a-b); // 高度排序
+          if(largeEle.x===smallEle.x&&largeEle.x2===smallEle.x2&&largeEle.width===smallEle.width) { // 平行关系
+            spotList.push(
+              {
+                startX:(smallEle.x2+smallEle.x)/2,
+                startY:y_List[1],
+                endX:(smallEle.x2+smallEle.x)/2,
+                endY:y_List[2],
+              }
+            )
+          }
+          else {
+            spotList.push(
+            {
+              startX:smallEle.x,
+              startY:(smallEle.y+smallEle.y2)/2,
+              endX:largeEle.x,
+              endY:(smallEle.y+smallEle.y2)/2
+            },
+            {
+              startX:largeEle.x,
+              startY:(smallEle.y+smallEle.y2)/2,
+              endX:largeEle.x,
+              endY:Math.abs((smallEle.y+smallEle.y2)/2-largeEle.y)>=Math.abs((smallEle.y+smallEle.y2)/2-largeEle.y2)?largeEle.y2:largeEle.y, // 找出最短距离线
+              type:'stroke'
+            },
+            {
+              startX:smallEle.x2,
+              startY:(smallEle.y+smallEle.y2)/2,
+              endX:largeEle.x2,
+              endY:(smallEle.y+smallEle.y2)/2
+            },
+            {
+              startX:largeEle.x2,
+              startY:(smallEle.y+smallEle.y2)/2,
+              endX:largeEle.x2,
+              endY:Math.abs((smallEle.y+smallEle.y2)/2-largeEle.y)>=Math.abs((smallEle.y+smallEle.y2)/2-largeEle.y2)?largeEle.y2:largeEle.y,
+              type:'stroke'
+            },
+            {
+              startX:(smallEle.x2+smallEle.x)/2,
+              startY:y_List[1],
+              endX:(smallEle.x2+smallEle.x)/2,
+              endY:y_List[2],
+            }
+          )
+          }
+          
+        } 
+        else {
+          const x_List = Array.from([largeEle.x,largeEle.x2,smallEle.x,smallEle.x2]).sort((a,b)=>a-b); // 高度排序
+          if(largeEle.y===smallEle.y&&largeEle.y2===smallEle.y2&&largeEle.height===smallEle.height) { // 平行关系
+            spotList.push(
+              {
+                startY:(smallEle.y2+smallEle.y)/2,
+                startX:x_List[1],
+                endY:(smallEle.y2+smallEle.y)/2,
+                endX:x_List[2],
+              }
+            )
+          }
+          else {
+            spotList.push(
+            {
+              startY:smallEle.y,
+              startX:(smallEle.x+smallEle.x2)/2,
+              endY:largeEle.y,
+              endX:(smallEle.x+smallEle.x2)/2
+            },
+            {
+              startY:largeEle.y,
+              startX:(smallEle.x+smallEle.x2)/2,
+              endY:largeEle.y,
+              endX:Math.abs((smallEle.x+smallEle.x2)/2-largeEle.x)>=Math.abs((smallEle.x+smallEle.x2)/2-largeEle.x2)?largeEle.x2:largeEle.x, // 找出最短距离线
+              type:'stroke'
+            },
+            {
+              startY:smallEle.y2,
+              startX:(smallEle.x+smallEle.x2)/2,
+              endY:largeEle.y2,
+              endX:(smallEle.x+smallEle.x2)/2
+            },
+            {
+              startY:largeEle.y2,
+              startX:(smallEle.x+smallEle.x2)/2,
+              endY:largeEle.y2,
+              endX:Math.abs((smallEle.x+smallEle.x2)/2-largeEle.x)>=Math.abs((smallEle.x+smallEle.x2)/2-largeEle.x2)?largeEle.x2:largeEle.x,
+              type:'stroke'
+            },
+            {
+              startY:(smallEle.y2+smallEle.y)/2,
+              startX:x_List[1],
+              endY:(smallEle.y2+smallEle.y)/2,
+              endX:x_List[2],
+            }
+          )
+          }
+        }
+        for(let i of spotList) {
+          var distance = Math.round(Math.max(Math.abs(i.startX-i.endX),Math.abs(i.startY-i.endY)))
+          var distanceLinePath = `M${i.startX},${i.startY} L${i.endX},${i.endY}`
+          distanceLine = paper.path(distanceLinePath);
+          distanceLine.attr("stroke", i.type?"blue":"red");
+          if(i.type) {
+            distanceLine.attr("stroke-width", 2);
+            distanceLine.attr("stroke-dasharray", "-");
+          }
+          distanceLineList.push(distanceLine)
+          if(!i.type) {
+            // var distance = Math.round(Math.max(Math.abs(i.startX-i.endX),Math.abs(i.startY-i.endY)))
+            var textX = i.startX===i.endX?i.startX:(i.startX+i.endX)/2;
+            var textY = i.startY===i.endY?i.startY:(i.startY+i.endY)/2;
+            drawText(distance,textX,textY)
+          }
+        }
+      }
+      
+      // 两元素包含时画线
+      function Draw_contain(largeEle,smallEle) {
+      
+        const spotList = [
+          // 向上垂直线
+          {
+            startX:(smallEle.x+smallEle.x2)/2,
+            startY:smallEle.y,
+            endX:(smallEle.x+smallEle.x2)/2, // 和startX相同，垂直线
+            endY:largeEle.y
+          },
+          // 向下垂直线
+          {
+            startX:(smallEle.x+smallEle.x2)/2,
+            startY:smallEle.y2,
+            endX:(smallEle.x+smallEle.x2)/2, // 和startX相同，垂直线
+            endY:largeEle.y2
+          },
+          // 向右垂直线
+          {
+            startX:smallEle.x2,
+            startY:(smallEle.y+smallEle.y2)/2,
+            endX:largeEle.x2, 
+            endY:(smallEle.y+smallEle.y2)/2,// 和startY相同，垂直线
+          },
+          // 向左垂直线
+          {
+            startX:smallEle.x,
+            startY:(smallEle.y+smallEle.y2)/2,
+            endX:largeEle.x, 
+            endY:(smallEle.y+smallEle.y2)/2,// 和startY相同，垂直线
+          },
+        ]
+      
+        for(let i of spotList) {
+          var distanceLinePath = `M${i.startX},${i.startY} L${i.endX},${i.endY}`
+          distanceLine = paper.path(distanceLinePath);
+          distanceLine.attr("stroke", "red");
+          distanceLineList.push(distanceLine)
+          var distance = Math.round(Math.max(Math.abs(i.startX-i.endX),Math.abs(i.startY-i.endY)))
+          var textX = i.startX===i.endX?i.startX:(i.startX+i.endX)/2;
+          var textY = i.startY===i.endY?i.startY:(i.startY+i.endY)/2;
+          drawText(distance,textX,textY)
+        }
+      }
+      
+      function removeFunc() {
+        let count=0;
+        while (distanceLineList[count]) {
+          distanceLineList[count++].remove();
+        }
+        count=0;
+        while (distanceRectList[count]) {
+          distanceRectList[count++].remove();
+        }
+        count=0;
+        while (distanceTextList[count]) {
+          distanceTextList[count++].remove();
+        }
+        count=0;
+      }
+      
+      // 绘制距离线
+      function drawDistanceLine(startRect, endRect) {
+        removeDistanceLine()
+      
+        var startRectBox = startRect.getBBox();
+        var endRectBox = endRect.getBBox();
+      
+        // 两元素互相包含
+        if(
+          (
+            (startRectBox.x<=endRectBox.x)&&(startRectBox.x2>=endRectBox.x2)&&(startRectBox.y<=endRectBox.y)&&(startRectBox.y2>=endRectBox.y2)
+          )||
+          (
+            (startRectBox.x>=endRectBox.x)&&(startRectBox.x2<=endRectBox.x2)&&(startRectBox.y>=endRectBox.y)&&(startRectBox.y2<=endRectBox.y2)
+          )
+          ){
+          const largeEle = startRectBox.x<=endRectBox.x?startRectBox:endRectBox;
+          const smallEle = largeEle===startRectBox?endRectBox:startRectBox;
+          Draw_contain(largeEle,smallEle)
+        }
+        // 一个元素宽或高包含另一元素
+        else if(
+          (
+            (startRectBox.x<=endRectBox.x)&&(startRectBox.x2>=endRectBox.x2)&&((startRectBox.y2<=endRectBox.y)||(startRectBox.y>=endRectBox.y2))
+          )||
+          (
+            (startRectBox.x>=endRectBox.x)&&(startRectBox.x2<=endRectBox.x2)&&((startRectBox.y2<=endRectBox.y)||(startRectBox.y>=endRectBox.y2))
+          )||
+          (
+            (startRectBox.y<=endRectBox.y)&&(startRectBox.y2>=endRectBox.y2)
+          )||
+          (
+            (startRectBox.y>=endRectBox.y)&&(startRectBox.y2<=endRectBox.y2)
+          )
+        ){
+          let largeEle = null;
+          let smallEle = null;
+          let direction = 'horizontal' // 元素水平对比
+          if(((startRectBox.x<=endRectBox.x)&&(startRectBox.x2>=endRectBox.x2))||((startRectBox.y<=endRectBox.y)&&(startRectBox.y2>=endRectBox.y2))) {
+            largeEle = startRectBox;
+            smallEle = endRectBox;
+            if((startRectBox.y<=endRectBox.y)&&(startRectBox.y2>=endRectBox.y2)) direction = 'vertical';
+          }
+          else {
+            largeEle = endRectBox;
+            smallEle = startRectBox;
+            if((startRectBox.y>=endRectBox.y)&&(startRectBox.y2<=endRectBox.y2)) direction = 'vertical';
+          }
+          Draw_contain_xy(largeEle,smallEle,direction)
+        }
+        else { // 两元素没有交错的情况
+          const drawSpot = calculateDis(startRect,endRect); // 划线的两个点
+        // console.log(drawSpot)
+        var startX = drawSpot[0][0];
+        var startY = drawSpot[0][1];
+      
+        var endX = drawSpot[1][0];
+        var endY = drawSpot[1][1];
+      
+        var distanceLinePath = `M${startX},${startY} L${endX},${startY} L${endX},${endY}`;
+        distanceLine = paper.path(distanceLinePath);
+        distanceLine.attr("stroke", "red");
+        distanceLineList.push(distanceLine)
+          
+      
+        // var distancex = Math.round(getClosestBoundaryDistance(startRectBox, endRectBox)[0]);
+        // var distancey = Math.round(getClosestBoundaryDistance(startRectBox, endRectBox)[1]);
+        var distancex = Math.round(Math.abs(startX-endX))
+        var distancey = Math.round(Math.abs(startY-endY))
+        var textX1 = (startX + endX) / 2;
+        var textY1 = startY
+        var textX2 = endX
+        var textY2 = (startY + endY) / 2;
+        if(distancex!==0) drawText(distancex,textX1,textY1);
+        if(distancey!==0) drawText(distancey,textX2,textY2);
+        }
+        
+      }
+      // 移除距离线
+      function removeDistanceLine() {
+        let count=0;
+        while (distanceLineList[count]) {
+          distanceLineList[count++].remove();
+        }
+        count=0;
+        while (distanceRectList[count]) {
+          distanceRectList[count++].remove();
+        }
+        count=0;
+        while (distanceTextList[count]) {
+          distanceTextList[count++].remove();
+        }
+        count=0;
+      }
+      
+      // 计算两个矩形之间的最短边界距离
+      function getClosestBoundaryDistance(rect1, rect2) {
+        var distanceX = Math.max(
+          0,
+          Math.max(rect2.x - (rect1.x + rect1.width), rect1.x - (rect2.x + rect2.width))
+        );
+      
+        var distanceY = Math.max(
+          0,
+          Math.max(rect2.y - (rect1.y + rect1.height), rect1.y - (rect2.y + rect2.height))
+        );
+      
+        return [distanceX,distanceY];
+      }
+        </script>
+</html>

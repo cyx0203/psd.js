@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #canvas {
+        position: relative;
+        width: 100wvh;
+        height: 100vh;
+        border: 1px solid black;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="canvas"
+      onmousedown="startDragging(event)"
+      onmousemove="drag(event)"
+      onmouseup="stopDragging()"
+    >
+      <!-- 在这里放置您的绘图内容 -->
+      <img src="./index7.png" />
+    </div>
+
+    <script>
+      var isDragging = false;
+      var startPosition = { x: 0, y: 0 };
+      var offset = { x: 0, y: 0 };
+
+      function startDragging(event) {
+        isDragging = true;
+        startPosition.x = event.clientX;
+        startPosition.y = event.clientY;
+      }
+
+      function drag(event) {
+        if (!isDragging) return;
+
+        var currentX = event.clientX;
+        var currentY = event.clientY;
+
+        var deltaX = currentX - startPosition.x;
+        var deltaY = currentY - startPosition.y;
+
+        offset.x += deltaX;
+        offset.y += deltaY;
+
+        startPosition.x = currentX;
+        startPosition.y = currentY;
+
+        updateCanvasPosition();
+      }
+
+      function stopDragging() {
+        isDragging = false;
+      }
+
+      function updateCanvasPosition() {
+        var canvas = document.getElementById("canvas");
+        canvas.style.left = offset.x + "px";
+        canvas.style.top = offset.y + "px";
+      }
+    </script>
+  </body>
+</html>

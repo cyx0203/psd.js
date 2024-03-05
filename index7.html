@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PSD Data</title>
+    <style>
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+</head>
+<body>
+  <div id="designContainer"></div>
+  <script>
+//    var paper = Raphael("designContainer", 800, 600);
+//    var circle = paper.circle(100, 100, 50);
+//     circle.attr("fill", "red");
+
+//     var mouseX, mouseY;
+
+// circle.mouseover(function(event) {
+//   mouseX = event.offsetX;
+//   mouseY = event.offsetY;
+  
+//   var xDistance = mouseX - circle.attr("cx");
+//   var yDistance = mouseY - circle.attr("cy");
+//   var distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+
+//   // 创建标注元素
+//   var annotation = paper.text(circle.attr("cx"), circle.attr("cy"), "Distance: " + distance.toFixed(2));
+
+//   // 其他样式和属性设置...
+
+//   // 移动鼠标时更新标注位置
+//   paper.canvas.onmousemove = function(event) {
+//     mouseX = event.offsetX;
+//     mouseY = event.offsetY;
+//     annotation.attr({
+//       x: circle.attr("cx"),
+//       y: circle.attr("cy")
+//     });
+//   };
+
+//   // 鼠标离开时移除标注
+//   circle.mouseout(function() {
+//     annotation.remove();
+//     paper.canvas.onmousemove = null;
+//   });
+// });
+
+var paper = Raphael("designContainer", 800, 600);
+var circle1 = paper.circle(100, 100, 50);
+circle1.attr("fill", "red");
+
+var circle2 = paper.circle(200, 200, 50);
+circle2.attr("fill", "blue");
+
+var circle3 = paper.circle(300, 300, 50);
+circle3.attr("fill", "green");
+
+var selectedCircle = null;
+var distanceLine = null;
+
+function calculateDistance(circle, mouseX, mouseY) {
+  var xDistance = mouseX - circle.attr("cx");
+  var yDistance = mouseY - circle.attr("cy");
+  return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+}
+
+function drawDistanceLine(startX, startY, endX, endY) {
+  if (distanceLine) {
+    distanceLine.remove();
+  }
+  distanceLine = paper.path(`M${startX},${startY} L${endX},${endY}`);
+  distanceLine.attr("stroke", "black");
+}
+
+circle1.mouseover(function(event) {
+  if (selectedCircle && selectedCircle !== circle1) {
+    var distance = calculateDistance(selectedCircle, event.offsetX, event.offsetY);
+    drawDistanceLine(selectedCircle.attr("cx"), selectedCircle.attr("cy"), circle1.attr("cx"), circle1.attr("cy"));
+    console.log("Distance:", distance.toFixed(2));
+  }
+});
+
+circle2.mouseover(function(event) {
+  if (selectedCircle && selectedCircle !== circle2) {
+    var distance = calculateDistance(selectedCircle, event.offsetX, event.offsetY);
+    drawDistanceLine(selectedCircle.attr("cx"), selectedCircle.attr("cy"), circle2.attr("cx"), circle2.attr("cy"));
+    console.log("Distance:", distance.toFixed(2));
+  }
+});
+
+circle3.mouseover(function(event) {
+  if (selectedCircle && selectedCircle !== circle3) {
+    var distance = calculateDistance(selectedCircle, event.offsetX, event.offsetY);
+    drawDistanceLine(selectedCircle.attr("cx"), selectedCircle.attr("cy"), circle3.attr("cx"), circle3.attr("cy"));
+    console.log("Distance:", distance.toFixed(2));
+  }
+});
+
+circle1.mouseout(function() {
+  if (distanceLine) {
+    distanceLine.remove();
+  }
+});
+
+circle2.mouseout(function() {
+  if (distanceLine) {
+    distanceLine.remove();
+  }
+});
+
+circle3.mouseout(function() {
+  if (distanceLine) {
+    distanceLine.remove();
+  }
+});
+
+circle1.click(function() {
+  selectedCircle = circle1;
+});
+
+circle2.click(function() {
+  selectedCircle = circle2;
+});
+
+circle3.click(function() {
+  selectedCircle = circle3;
+});
+  </script>
+</body>
+</html>

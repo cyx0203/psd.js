@@ -1,0 +1,24 @@
+{
+    "name": "psdtool",
+    "version": "1.1.0",
+    "main": "index.js",
+    "license": "MIT",
+    "type": "commonjs",
+    "scripts": {
+        "dist": "pkg index.js -o padtool.exe",
+        "dev": "node index.js"
+    },
+    "dependencies": {
+        "@webtoon/psd": "^0.4.0",
+        "bootstrap": "^5.3.2",
+        "cheerio": "^1.0.0-rc.12",
+        "deasync": "^0.1.28",
+        "fabric": "^5.3.0",
+        "konva": "^9.2.3",
+        "opentype.js": "^1.3.4",
+        "psd": "^3.4.0",
+        "raphael": "2.3.0",
+        "sketch2json": "^0.1.2",
+        "socket.io": "4.4.1"
+    }
+}

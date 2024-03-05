@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Raphael2</title>
+    <style>
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+</head>
+<body>
+  <div id="designContainer"></div>
+  <script>
+var paper = Raphael("designContainer", 800, 600);
+
+// 创建三个矩形
+var rect1 = paper.rect(100, 100, 100, 100,20); // 圆角radious为20
+rect1.attr("fill", "red");
+
+var rect2 = paper.rect(250, 250, 100, 100,20);
+rect2.attr("fill", "blue");
+
+var rect3 = paper.rect(400, 400, 100, 100,20);
+rect3.attr("fill", "green");
+
+var selectedRect = null;
+var distanceLine = null;
+var distanceRect = null;
+var distanceRectList = [];
+var distanceTextList = [];
+var distanceText = null;
+
+// 添加红色边框到选中元素
+function addSelectedBorder(element) {
+  var bbox = element.getBBox();
+  var border = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+  border.attr("stroke", "red");
+  border.attr("stroke-width", 2);
+  border.attr("fill", "none");
+  element.data("border", border);
+}
+
+// 添加蓝色边框到悬浮元素
+function addHoverBorder(element) {
+  var bbox = element.getBBox();
+  var border = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+  border.attr("stroke", "blue");
+  border.attr("stroke-width", 2);
+  border.attr("fill", "none");
+  element.data("border", border);
+}
+
+// 移除边框
+function removeBorder(element) {
+  var border = element.data("border");
+  if (border&&element!==selectedElement) {
+    border.remove();
+    element.removeData("border");
+  }
+}
+
+// 监听元素选中和鼠标悬停事件
+var selectedElement = null;
+
+paper.forEach(function (element) {
+  element.click(function () {
+    // 移除之前选中元素的边框
+    if (selectedElement) {
+      removeBorder(selectedElement);
+    }
+
+    // 添加红色边框到当前选中元素
+    addSelectedBorder(this);
+
+    // 更新选中元素
+    selectedElement = this;
+  });
+
+  element.hover(
+    function () {
+      // 添加蓝色边框到悬浮元素
+      if((selectedElement&&selectedElement!==this)) addHoverBorder(this);
+      if (selectedElement && selectedElement !== element) {
+        drawDistanceLine(selectedElement, element);
+      }
+    },
+    function () {
+      // 移除悬浮元素的边框
+      removeBorder(this);
+      removeDistanceLine();
+    }
+  );
+});
+
+// 点击事件处理程序
+// rect1.click(function() {
+//   selectedRect = rect1;
+//   updateSelection(selectedRect);
+// });
+
+// rect2.click(function() {
+//   selectedRect = rect2;
+//   updateSelection();
+// });
+
+// rect3.click(function() {
+//   selectedRect = rect3;
+//   updateSelection();
+// });
+
+// // 鼠标悬浮事件处理程序
+// rect1.hover(
+//   function() {
+//     if (selectedRect && selectedRect !== rect1) {
+//       drawDistanceLine(selectedRect, rect1);
+//     }
+//   },
+//   function() {
+//     removeDistanceLine();
+//   }
+// );
+
+// rect2.hover(
+//   function() {
+//     if (selectedRect && selectedRect !== rect2) {
+//       drawDistanceLine(selectedRect, rect2);
+//     }
+//   },
+//   function() {
+//     removeDistanceLine();
+//   }
+// );
+
+// rect3.hover(
+//   function() {
+//     if (selectedRect && selectedRect !== rect3) {
+//       drawDistanceLine(selectedRect, rect3);
+//     }
+//   },
+//   function() {
+//     removeDistanceLine();
+//   }
+// );
+
+// 计算两图形距离最近的点
+function calculateDis(mystart,myend) {
+  const start = mystart.getBBox();
+  const end = myend.getBBox()
+  // console.log(start,end)
+  const startSpot = [
+    [start.x,start.y],
+    [start.x2,start.y],
+    [start.x,start.y2],
+    [start.x2,start.y2]
+  ];
+  const endSpot = [
+    [end.x,end.y],
+    [end.x2,end.y],
+    [end.x,end.y2],
+    [end.x2,end.y2]
+  ];
+  let min = Math.abs(Math.pow(startSpot[0][0]-endSpot[0][0],2)+Math.pow(startSpot[0][1]-endSpot[0][1],2))
+  // console.log(min)
+  let minArr = [startSpot[0],startSpot[0]]
+  for(let i=0;i<startSpot.length;i++) {
+    for(let j=0;j<endSpot.length;j++) {
+      const s = startSpot[i];
+      const e = endSpot[j]
+      const dis = Math.abs(Math.pow(s[0]-e[0],2)+Math.pow(s[1]-e[1],2))
+      // console.log(dis)
+      if(dis<=min) minArr = [s,e];
+      min = Math.min(min,dis);
+    }
+  }
+  return minArr;
+
+}
+
+// 绘制文字
+function drawText(distance,textX,textY){
+  var padding = 5;
+  var text = paper.text(textX, textY, distance.toFixed(2));
+  text.attr(
+    {
+    "font-size": 12,
+    "fill": "white",
+    "text-anchor": "middle",
+    "vertical-align": "bottom"
+    });
+  // text.attr();
+  var textBBox = text.getBBox();
+  var rectWidth = textBBox.width + 2 * padding;
+  var rectHeight = textBBox.height + 2 * padding;
+
+  distanceRect = paper.rect(
+    textX - rectWidth / 2,
+    textY - rectHeight / 2,
+    rectWidth,
+    rectHeight,
+    5
+  );
+  distanceRect.attr("fill", "red");
+  distanceRect.attr("stroke", "none"); // 去掉文字外圈圆角矩形边框
+  distanceRectList.push(distanceRect)
+
+  distanceText = paper.text(textX, textY, distance.toFixed(2));
+  distanceText.attr("font-size", "12px");
+  distanceText.attr("fill", "white");
+  distanceTextList.push(distanceText)
+}
+
+// 绘制距离线
+function drawDistanceLine(startRect, endRect) {
+  let count=0;
+  if (distanceLine) {
+    distanceLine.remove();
+  }
+  while (distanceRectList[count]) {
+    distanceRectList[count++].remove();
+  }
+  count=0;
+  while (distanceTextList[count]) {
+    distanceTextList[count++].remove();
+  }
+  count=0;
+
+  var startRectBox = startRect.getBBox();
+  var endRectBox = endRect.getBBox();
+
+  // 选中在悬浮右侧
+  // if(startRectBox.x>=endRectBox.x+endRectBox.width) {
+  //   var startX = startRectBox.x;
+  //   var startY = startRectBox.y;
+
+  //   var endX = endRectBox.x + endRectBox.width;
+  //   var endY = endRectBox.y + endRectBox.height;
+  // }
+  // else {
+  //   var startX = startRectBox.x + startRectBox.width;
+  //   var startY = startRectBox.y + startRectBox.height;
+
+  //   var endX = endRectBox.x ;
+  //   var endY = endRectBox.y ;
+  // }
+  
+  // var startX = startRectBox.x + startRectBox.width / 2;
+  // var startY = startRectBox.y + startRectBox.height / 2;
+
+  // var endX = endRectBox.x + endRectBox.width / 2;
+  // var endY = endRectBox.y + endRectBox.height / 2;
+
+  const drawSpot = calculateDis(startRect,endRect); // 划线的两个点
+  // console.log(drawSpot)
+  var startX = drawSpot[0][0];
+  var startY = drawSpot[0][1];
+
+  var endX = drawSpot[1][0];
+  var endY = drawSpot[1][1];
+
+  var distanceLinePath = `M${startX},${startY} L${endX},${startY} L${endX},${endY}`;
+  distanceLine = paper.path(distanceLinePath);
+  distanceLine.attr("stroke", "red");
+    
+
+  var distancex = getClosestBoundaryDistance(startRectBox, endRectBox)[0];
+  var distancey = getClosestBoundaryDistance(startRectBox, endRectBox)[1];
+  var textX1 = (startX + endX) / 2;
+  var textY1 = startY
+  var textX2 = endX
+  var textY2 = (startY + endY) / 2;
+  drawText(distancex,textX1,textY1);
+  drawText(distancey,textX2,textY2);
+  // var padding = 5;
+  // var text = paper.text(textX1, textY1, distancex.toFixed(2));
+  // text.attr(
+  //   {
+  //   "font-size": 12,
+  //   "fill": "white",
+  //   "text-anchor": "middle",
+  //   "vertical-align": "bottom"
+  //   });
+  // // text.attr();
+  // var textBBox = text.getBBox();
+  // var rectWidth = textBBox.width + 2 * padding;
+  // var rectHeight = textBBox.height + 2 * padding;
+
+  // distanceRect = paper.rect(
+  //   textX1 - rectWidth / 2,
+  //   textY1 - rectHeight / 2,
+  //   rectWidth,
+  //   rectHeight,
+  //   5
+  // );
+  // distanceRect.attr("fill", "red");
+  // distanceRect.attr("stroke", "none"); // 去掉文字外圈圆角矩形边框
+
+  // distanceText = paper.text(textX1, textY1, distancex.toFixed(2));
+  // distanceText.attr("font-size", "12px");
+  // distanceText.attr("fill", "white");
+}
+
+// 更新选中元素的边框样式
+// function updateSelection(element) {
+//   // rect1.attr("stroke", "none");
+//   // rect2.attr("stroke", "none");
+//   // rect3.attr("stroke", "none");
+
+//   // if (selectedRect) {
+//   //   selectedRect.attr("stroke", "red");
+//   // }
+
+//   var bbox = element.getBBox();
+//   var border = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+//   border.attr("stroke", "red");
+//   border.attr("stroke-width", 2);
+//   border.attr("fill", "none");
+//   element.data("border", border);
+// }
+
+// 移除距离线
+function removeDistanceLine() {
+  let count=0;
+  if (distanceLine) {
+    distanceLine.remove();
+  }
+  while (distanceRectList[count]) {
+    distanceRectList[count++].remove();
+  }
+  count=0;
+  while (distanceTextList[count]) {
+    distanceTextList[count++].remove();
+  }
+  count=0;
+}
+
+// 计算两个矩形之间的最短边界距离
+function getClosestBoundaryDistance(rect1, rect2) {
+  var distanceX = Math.max(
+    0,
+    Math.max(rect2.x - (rect1.x + rect1.width), rect1.x - (rect2.x + rect2.width))
+  );
+
+  var distanceY = Math.max(
+    0,
+    Math.max(rect2.y - (rect1.y + rect1.height), rect1.y - (rect2.y + rect2.height))
+  );
+
+  return [distanceX,distanceY];
+}
+
+// 如果是互相没有交叉的元素，可以算最短距离的顶点，然后绘制两顶点间的三角形
+  </script>
+</body>
+</html>

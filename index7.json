@@ -1,0 +1,718 @@
+{
+    "children": [{
+        "type": "group",
+        "visible": true,
+        "opacity": 1,
+        "blendingMode": "normal",
+        "name": "确认按钮",
+        "left": 89,
+        "right": 661,
+        "top": 768,
+        "bottom": 851,
+        "height": 83,
+        "width": 572,
+        "children": [{
+            "type": "layer",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "确认",
+            "left": 346,
+            "right": 405,
+            "top": 794,
+            "bottom": 823,
+            "height": 29,
+            "width": 59,
+            "mask": {},
+            "text": {
+                "value": "确认",
+                "font": {
+                    "lengthArray": [1, 1],
+                    "styles": ["normal", "normal"],
+                    "weights": ["normal", "normal"],
+                    "names": ["AdobeInvisFont", "AdobeHeitiStd-Regular"],
+                    "sizes": [30, 30],
+                    "colors": [
+                        [255, 255, 255, 255],
+                        [255, 255, 255, 255]
+                    ],
+                    "alignment": ["left"],
+                    "textDecoration": ["none", "none"],
+                    "leading": [39.99999, 39.99999]
+                },
+                "left": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "transform": {
+                    "xx": 1,
+                    "xy": 0,
+                    "yx": 0,
+                    "yy": 1,
+                    "tx": 345.4706612124463,
+                    "ty": 820.0978117460795
+                }
+            },
+            "image": {}
+        }, {
+            "type": "layer",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "按钮背景",
+            "left": 89,
+            "right": 661,
+            "top": 768,
+            "bottom": 851,
+            "height": 83,
+            "width": 572,
+            "mask": {
+                "top": 768,
+                "left": 89,
+                "bottom": 851,
+                "right": 661,
+                "width": 572,
+                "height": 83,
+                "defaultColor": 0,
+                "relative": false,
+                "disabled": false,
+                "invert": false
+            },
+            "image": {}
+        }]
+    }, {
+        "type": "group",
+        "visible": true,
+        "opacity": 1,
+        "blendingMode": "normal",
+        "name": "输入线",
+        "left": 89,
+        "right": 661,
+        "top": 237,
+        "bottom": 664,
+        "height": 427,
+        "width": 572,
+        "children": [{
+            "type": "group",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "验证码组",
+            "left": 89,
+            "right": 661,
+            "top": 605,
+            "bottom": 664,
+            "height": 59,
+            "width": 572,
+            "children": [{
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "形状 1",
+                "left": 358,
+                "right": 393,
+                "top": 612,
+                "bottom": 633,
+                "height": 21,
+                "width": 35,
+                "mask": {
+                    "top": 612,
+                    "left": 358,
+                    "bottom": 633,
+                    "right": 393,
+                    "width": 35,
+                    "height": 21,
+                    "defaultColor": 0,
+                    "relative": false,
+                    "disabled": false,
+                    "invert": false
+                },
+                "image": {}
+            }, {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "验证码",
+                "left": 100,
+                "right": 187,
+                "top": 605,
+                "bottom": 634,
+                "height": 29,
+                "width": 87,
+                "mask": {},
+                "text": {
+                    "value": "验证码",
+                    "font": {
+                        "lengthArray": [3],
+                        "styles": ["normal"],
+                        "weights": ["normal"],
+                        "names": ["AdobeInvisFont", "AdobeHeitiStd-Regular"],
+                        "sizes": [30],
+                        "colors": [
+                            [153, 153, 153, 255]
+                        ],
+                        "alignment": ["left"],
+                        "textDecoration": ["none"],
+                        "leading": [39.99999]
+                    },
+                    "left": 0,
+                    "top": 0,
+                    "right": 0,
+                    "bottom": 0,
+                    "transform": {
+                        "xx": 1,
+                        "xy": 0,
+                        "yx": 0,
+                        "yy": 1,
+                        "tx": 98.88927335640142,
+                        "ty": 631.0408958130478
+                    }
+                },
+                "image": {}
+            }, {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "线",
+                "left": 89,
+                "right": 661,
+                "top": 660,
+                "bottom": 664,
+                "height": 4,
+                "width": 572,
+                "mask": {
+                    "top": 660,
+                    "left": 89,
+                    "bottom": 664,
+                    "right": 661,
+                    "width": 572,
+                    "height": 4,
+                    "defaultColor": 0,
+                    "relative": false,
+                    "disabled": false,
+                    "invert": false
+                },
+                "image": {}
+            }]
+        }, {
+            "type": "group",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "联系手机组",
+            "left": 89,
+            "right": 661,
+            "top": 482,
+            "bottom": 540,
+            "height": 58,
+            "width": 572,
+            "children": [
+                {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "获取",
+                "left": 610,
+                "right": 660,
+                "top": 486,
+                "bottom": 511,
+                "height": 25,
+                "width": 50,
+                "mask": {},
+                "text": {
+                    "value": "获取",
+                    "font": {
+                        "lengthArray": [2],
+                        "styles": ["normal"],
+                        "weights": ["normal"],
+                        "names": ["PingFangSC-Regular", "AdobeInvisFont", "AdobeHeitiStd-Regular"],
+                        "sizes": [26],
+                        "colors": [
+                            [38, 125, 255, 255]
+                        ],
+                        "alignment": ["left"],
+                        "textDecoration": ["none"],
+                        "leading": [39.99999]
+                    },
+                    "left": 0,
+                    "top": 0,
+                    "right": 0,
+                    "bottom": 0,
+                    "transform": {
+                        "xx": 1,
+                        "xy": 0,
+                        "yx": 0,
+                        "yy": 1,
+                        "tx": 608.8892733564014,
+                        "ty": 508.04089581304777
+                    }
+                },
+                "image": {}
+            }, {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "联系手机",
+                "left": 100,
+                "right": 218,
+                "top": 482,
+                "bottom": 511,
+                "height": 29,
+                "width": 118,
+                "mask": {},
+                "text": {
+                    "value": "联系手机",
+                    "font": {
+                        "lengthArray": [4],
+                        "styles": ["normal"],
+                        "weights": ["normal"],
+                        "names": ["AdobeInvisFont", "AdobeHeitiStd-Regular"],
+                        "sizes": [30],
+                        "colors": [
+                            [153, 153, 153, 255]
+                        ],
+                        "alignment": ["left"],
+                        "textDecoration": ["none"],
+                        "leading": [39.99999]
+                    },
+                    "left": 0,
+                    "top": 0,
+                    "right": 0,
+                    "bottom": 0,
+                    "transform": {
+                        "xx": 1,
+                        "xy": 0,
+                        "yx": 0,
+                        "yy": 1,
+                        "tx": 98.88927335640142,
+                        "ty": 508.04089581304777
+                    }
+                },
+                "image": {}
+            }, 
+            {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "线",
+                "left": 89,
+                "right": 661,
+                "top": 537,
+                "bottom": 540,
+                "height": 3,
+                "width": 572,
+                "mask": {
+                    "top": 537,
+                    "left": 89,
+                    "bottom": 540,
+                    "right": 661,
+                    "width": 572,
+                    "height": 3,
+                    "defaultColor": 0,
+                    "relative": false,
+                    "disabled": false,
+                    "invert": false
+                },
+                "image": {}
+            }]
+        }, {
+            "type": "group",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "身份证号码组",
+            "left": 89,
+            "right": 661,
+            "top": 359,
+            "bottom": 417,
+            "height": 58,
+            "width": 572,
+            "children": [{
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "形状 1",
+                "left": 358,
+                "right": 393,
+                "top": 366,
+                "bottom": 386,
+                "height": 20,
+                "width": 35,
+                "mask": {
+                    "top": 366,
+                    "left": 358,
+                    "bottom": 386,
+                    "right": 393,
+                    "width": 35,
+                    "height": 20,
+                    "defaultColor": 0,
+                    "relative": false,
+                    "disabled": false,
+                    "invert": false
+                },
+                "image": {}
+            }, {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "身份证号码",
+                "left": 101,
+                "right": 247,
+                "top": 359,
+                "bottom": 388,
+                "height": 29,
+                "width": 146,
+                "mask": {},
+                "text": {
+                    "value": "身份证号码",
+                    "font": {
+                        "lengthArray": [5],
+                        "styles": ["normal"],
+                        "weights": ["normal"],
+                        "names": ["AdobeInvisFont", "AdobeHeitiStd-Regular"],
+                        "sizes": [30],
+                        "colors": [
+                            [153, 153, 153, 255]
+                        ],
+                        "alignment": ["left"],
+                        "textDecoration": ["none"],
+                        "leading": [39.99999]
+                    },
+                    "left": 0,
+                    "top": 0,
+                    "right": 0,
+                    "bottom": 0,
+                    "transform": {
+                        "xx": 1,
+                        "xy": 0,
+                        "yx": 0,
+                        "yy": 1,
+                        "tx": 98.88927335640142,
+                        "ty": 385.04089581304777
+                    }
+                },
+                "image": {}
+            }, {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "线",
+                "left": 89,
+                "right": 661,
+                "top": 414,
+                "bottom": 417,
+                "height": 3,
+                "width": 572,
+                "mask": {
+                    "top": 414,
+                    "left": 89,
+                    "bottom": 417,
+                    "right": 661,
+                    "width": 572,
+                    "height": 3,
+                    "defaultColor": 0,
+                    "relative": false,
+                    "disabled": false,
+                    "invert": false
+                },
+                "image": {}
+            }]
+        }, {
+            "type": "group",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "姓名",
+            "left": 89,
+            "right": 661,
+            "top": 237,
+            "bottom": 294,
+            "height": 57,
+            "width": 572,
+            "children": [{
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "姓名",
+                "left": 100,
+                "right": 156,
+                "top": 237,
+                "bottom": 265,
+                "height": 28,
+                "width": 56,
+                "mask": {},
+                "text": {
+                    "value": "姓名",
+                    "font": {
+                        "lengthArray": [2],
+                        "styles": ["normal"],
+                        "weights": ["normal"],
+                        "names": ["AdobeInvisFont", "AdobeHeitiStd-Regular"],
+                        "sizes": [30],
+                        "colors": [
+                            [153, 153, 153, 255]
+                        ],
+                        "alignment": ["left"],
+                        "textDecoration": ["none"],
+                        "leading": [39.99999]
+                    },
+                    "left": 0,
+                    "top": 0,
+                    "right": 0,
+                    "bottom": 0,
+                    "transform": {
+                        "xx": 1,
+                        "xy": 0,
+                        "yx": 0,
+                        "yy": 1,
+                        "tx": 98.88927335640142,
+                        "ty": 262.04089581304777
+                    }
+                },
+                "image": {}
+            }, {
+                "type": "layer",
+                "visible": true,
+                "opacity": 1,
+                "blendingMode": "normal",
+                "name": "线",
+                "left": 89,
+                "right": 661,
+                "top": 290,
+                "bottom": 294,
+                "height": 4,
+                "width": 572,
+                "mask": {
+                    "top": 290,
+                    "left": 89,
+                    "bottom": 294,
+                    "right": 661,
+                    "width": 572,
+                    "height": 4,
+                    "defaultColor": 0,
+                    "relative": false,
+                    "disabled": false,
+                    "invert": false
+                },
+                "image": {}
+            }]
+        }]
+    }, {
+        "type": "layer",
+        "visible": true,
+        "opacity": 1,
+        "blendingMode": "normal",
+        "name": "圆角矩形 1",
+        "left": 39,
+        "right": 711,
+        "top": 162,
+        "bottom": 978,
+        "height": 816,
+        "width": 672,
+        "mask": {
+            "top": 162,
+            "left": 39,
+            "bottom": 978,
+            "right": 711,
+            "width": 672,
+            "height": 816,
+            "defaultColor": 0,
+            "relative": false,
+            "disabled": false,
+            "invert": false
+        },
+        "image": {}
+    }, {
+        "type": "group",
+        "visible": true,
+        "opacity": 1,
+        "blendingMode": "normal",
+        "name": "导航栏 拷贝",
+        "left": -1,
+        "right": 752,
+        "top": 8,
+        "bottom": 127,
+        "height": 119,
+        "width": 753,
+        "children": [{
+            "type": "layer",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "实名信息",
+            "left": 316,
+            "right": 433,
+            "top": 59,
+            "bottom": 88,
+            "height": 29,
+            "width": 117,
+            "mask": {},
+            "text": {
+                "value": "实名信息",
+                "font": {
+                    "lengthArray": [1, 3],
+                    "styles": ["normal", "normal"],
+                    "weights": ["normal", "normal"],
+                    "names": ["PingFangSC-Medium", "AdobeInvisFont", "AdobeHeitiStd-Regular", "SimSun"],
+                    "sizes": [30, 30],
+                    "colors": [
+                        [51, 51, 51, 255],
+                        [51, 51, 51, 255]
+                    ],
+                    "alignment": ["center"],
+                    "textDecoration": ["none", "none"],
+                    "leading": [32, 32]
+                },
+                "left": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "transform": {
+                    "xx": 1,
+                    "xy": 0,
+                    "yx": 0,
+                    "yy": 1,
+                    "tx": 374.4519420779907,
+                    "ty": 84.08053165110869
+                }
+            },
+            "image": {}
+        }, {
+            "type": "layer",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "Status bar",
+            "left": 12,
+            "right": 738,
+            "top": 8,
+            "bottom": 27,
+            "height": 19,
+            "width": 726,
+            "mask": {},
+            "image": {}
+        }, {
+            "type": "layer",
+            "visible": true,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "形状 3 拷贝 2",
+            "left": 29,
+            "right": 54,
+            "top": 54,
+            "bottom": 92,
+            "height": 38,
+            "width": 25,
+            "mask": {
+                "top": 54,
+                "left": 29,
+                "bottom": 92,
+                "right": 54,
+                "width": 25,
+                "height": 38,
+                "defaultColor": 0,
+                "relative": false,
+                "disabled": false,
+                "invert": false
+            },
+            "image": {}
+        }, {
+            "type": "layer",
+            "visible": false,
+            "opacity": 1,
+            "blendingMode": "normal",
+            "name": "形状 845 拷贝 4",
+            "left": -1,
+            "right": 752,
+            "top": 122,
+            "bottom": 127,
+            "height": 5,
+            "width": 753,
+            "mask": {
+                "top": 122,
+                "left": -1,
+                "bottom": 127,
+                "right": 752,
+                "width": 753,
+                "height": 5,
+                "defaultColor": 0,
+                "relative": false,
+                "disabled": false,
+                "invert": false
+            },
+            "image": {}
+        }]
+    }, {
+        "type": "layer",
+        "visible": true,
+        "opacity": 1,
+        "blendingMode": "normal",
+        "name": "顶部背景",
+        "left": -1,
+        "right": 751,
+        "top": -1,
+        "bottom": 378,
+        "height": 379,
+        "width": 752,
+        "mask": {
+            "top": -1,
+            "left": -1,
+            "bottom": 378,
+            "right": 751,
+            "width": 752,
+            "height": 379,
+            "defaultColor": 0,
+            "relative": false,
+            "disabled": false,
+            "invert": false
+        },
+        "image": {}
+    }, {
+        "type": "layer",
+        "visible": true,
+        "opacity": 1,
+        "blendingMode": "normal",
+        "name": "背景",
+        "left": 0,
+        "right": 750,
+        "top": 0,
+        "bottom": 1334,
+        "height": 1334,
+        "width": 750,
+        "mask": {},
+        "image": {}
+    }],
+    "document": {
+        "width": 750,
+        "height": 1334,
+        "resources": {
+            "layerComps": [],
+            "resolutionInfo": {
+                "h_res": 72,
+                "h_res_unit": 1,
+                "width_unit": 2,
+                "v_res": 72,
+                "v_res_unit": 1,
+                "height_unit": 2
+            },
+            "guides": [{
+                "location": "29495882.4",
+                "direction": "horizontal"
+            }, {
+                "location": "15728640.0",
+                "direction": "vertical"
+            }],
+            "slices": []
+        }
+    }
+}
